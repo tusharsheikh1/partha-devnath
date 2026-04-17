@@ -2,14 +2,100 @@ import { useState, useEffect } from "react";
 import { useInView } from "./hooks/useInView";
 import { Sparkline } from "./components/Sparkline";
 import { Avatar } from "./components/Avatar";
-import { 
-  STATS, SERVICES, PROJECTS, PROCESS, 
-  TESTIMONIALS, FAQS, INDUSTRIES, NAV_LINKS 
+import {
+  STATS, SERVICES, PROJECTS, PROCESS,
+  TESTIMONIALS, FAQS, INDUSTRIES, NAV_LINKS
 } from "./data/constants";
-
-// The extracted styles. Make sure `App.css` is in the same directory, or adjust the path.
 import "./App.css";
 
+/* ── RECENT WORK DATA ── */
+const RECENT_WORKS = [
+  { file: "recent_work_1", title: "D2C Fashion Brand", tag: "Search + Shopping" },
+  { file: "recent_work_2", title: "SaaS Lead Gen", tag: "Performance Max" },
+  { file: "recent_work_3", title: "Health & Wellness", tag: "Search Campaigns" },
+  { file: "recent_work_4", title: "Local Services", tag: "Local + Call Ads" },
+  { file: "recent_work_5", title: "E-commerce Scale", tag: "Shopping + RLSA" },
+  { file: "recent_work_6", title: "B2B SaaS", tag: "Demand Gen" },
+];
+
+/* ── RECENT WORK SLIDE ── */
+function WorkSlide({ work }: { work: typeof RECENT_WORKS[0] }) {
+  const [hasImg, setHasImg] = useState(true);
+  return (
+    <div className="rwork-slide">
+      {hasImg ? (
+        <img
+          className="rwork-slide-img"
+          src={`/${work.file}.png`}
+          alt={work.title}
+          onError={() => setHasImg(false)}
+        />
+      ) : (
+        <div className="rwork-slide-placeholder">
+          <div className="rwork-slide-placeholder-icon">◈</div>
+          <div className="rwork-slide-placeholder-text">{work.title}</div>
+        </div>
+      )}
+      <div className="rwork-slide-overlay">
+        <div className="rwork-slide-title">{work.title}</div>
+        <div className="rwork-slide-tag">{work.tag}</div>
+      </div>
+    </div>
+  );
+}
+
+/* ── RECENT WORK SLIDER ── */
+function RecentWorkSlider({ inView }: { inView: boolean }) {
+  const [current, setCurrent] = useState(0);
+  const slidesVisible = 3;
+  const maxIndex = Math.max(0, RECENT_WORKS.length - slidesVisible);
+
+  const prev = () => setCurrent(c => Math.max(0, c - 1));
+  const next = () => setCurrent(c => Math.min(maxIndex, c + 1));
+
+  const trackStyle = {
+    transform: `translateX(calc(-${current * (380 + 20)}px))`,
+  };
+
+  return (
+    <section className="rwork">
+      <div className="rwork-inner">
+        <div className="rwork-head">
+          <div className={`sec-label ${inView ? "vis" : ""}`}>Portfolio</div>
+          <h2 className={`sec-title ${inView ? "vis" : ""}`}>
+            Recent <em>Work</em>
+          </h2>
+        </div>
+        <div className="rwork-track-wrap">
+          <div className="rwork-track" style={trackStyle}>
+            {RECENT_WORKS.map((w, i) => (
+              <WorkSlide key={i} work={w} />
+            ))}
+          </div>
+        </div>
+        <div className="rwork-controls">
+          <button className="rwork-btn" onClick={prev} disabled={current === 0} aria-label="Previous">
+            ←
+          </button>
+          <div className="rwork-dots">
+            {Array.from({ length: maxIndex + 1 }).map((_, i) => (
+              <div
+                key={i}
+                className={`rwork-dot ${current === i ? "active" : ""}`}
+                onClick={() => setCurrent(i)}
+              />
+            ))}
+          </div>
+          <button className="rwork-btn" onClick={next} disabled={current === maxIndex} aria-label="Next">
+            →
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── MAIN APP ── */
 export default function App() {
   const [scrollY, setScrollY] = useState(0);
   const [activeProj, setActiveProj] = useState<number | null>(null);
@@ -22,11 +108,18 @@ export default function App() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Lock scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = navOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [navOpen]);
+
   const hero     = useInView(0.05);
   const stats    = useInView(0.1);
   const about    = useInView(0.1);
   const services = useInView(0.08);
   const work     = useInView(0.05);
+  const rwork    = useInView(0.05);
   const process  = useInView(0.08);
   const testi    = useInView(0.1);
   const faq      = useInView(0.08);
@@ -34,49 +127,88 @@ export default function App() {
 
   const v = (s: { inView: boolean }) => s.inView;
 
+  const closeNav = () => setNavOpen(false);
+
   return (
     <>
+      {/* ══ MOBILE MENU ══ */}
+      <div className={`nav-mobile ${navOpen ? "open" : ""}`}>
+        {NAV_LINKS.map(n => (
+          <a key={n.href} href={n.href} onClick={closeNav}>{n.label}</a>
+        ))}
+        <a href="#contact" className="nav-cta-mobile" onClick={closeNav}>Book a Call →</a>
+      </div>
+
       {/* ══ NAVBAR ══ */}
       <nav className={`nav ${scrollY > 40 ? "scrolled" : ""}`}>
         <a href="#" className="nav-logo">
-          <img src="/partha_logo.png" alt="Partha Logo" style={{ height: "24px", width: "auto", display: "block" }} />
+          <img src="/partha_logo.png" alt="Partha Devnath" />
         </a>
         <ul className="nav-links">
-          {NAV_LINKS.map(n => <li key={n.href}><a href={n.href}>{n.label}</a></li>)}
+          {NAV_LINKS.map(n => (
+            <li key={n.href}><a href={n.href}>{n.label}</a></li>
+          ))}
         </ul>
-        <a href="#contact" className="nav-cta">Book a Call</a>
-        <button className="nav-burger" onClick={() => setNavOpen(!navOpen)} aria-label="Menu">
+        <a href="#contact" className="nav-cta">
+          <span>Book a Call</span>
+        </a>
+        <button
+          className={`nav-burger ${navOpen ? "open" : ""}`}
+          onClick={() => setNavOpen(!navOpen)}
+          aria-label="Menu"
+        >
           <span /><span /><span />
         </button>
       </nav>
 
       {/* ══ HERO ══ */}
       <section className="hero" ref={hero.ref}>
+        <div className="hero-bg" />
+        <div className="hero-bg-grid" />
+
         <div className={`hero-left ${v(hero) ? "vis" : ""}`}>
-          <div className="hero-tag">Google Ads Specialist</div>
+          <div className="hero-eyebrow">
+            <span className="eyebrow-dot" />
+            <span className="eyebrow-text">Google Ads Specialist</span>
+            <span className="eyebrow-line" />
+          </div>
           <h1 className="hero-h1">
-            Turning Ad Spend<br />
-            Into <em>Real</em> Revenue
+            <span className="line"><span>Turning Ad Spend</span></span>
+            <span className="line"><span>Into <em>Real</em></span></span>
+            <span className="line"><span>Revenue.</span></span>
           </h1>
           <p className="hero-sub">
             I'm <strong>Partha Devnath</strong> — a performance marketing specialist with <strong>6+ years</strong> managing Google Ads for D2C brands, SaaS companies, and local businesses globally.
           </p>
           <div className="hero-actions">
-            <a href="#contact" className="btn-primary">Book a Free Audit →</a>
-            <a href="#work"    className="btn-ghost">View Case Studies</a>
+            <a href="#contact" className="btn-primary">
+              <span>Book a Free Audit →</span>
+            </a>
+            <a href="#work" className="btn-ghost">View Case Studies</a>
           </div>
         </div>
+
         <div className={`hero-right ${v(hero) ? "vis" : ""}`}>
+          <div className="hero-right-glow" />
           <div className="hero-float hf-stat">
             <div className="hf-sv">8.4×</div>
             <div className="hf-sl">Avg. ROAS</div>
           </div>
-          <div className="hero-float hf-icon">
-            <div className="hf-icon-inner">◎</div>
+          <div className="hero-float hf-badge">
+            <div className="hf-icon">✦</div>
+            <div className="hf-sl">Certified Expert</div>
           </div>
-          <div className="hero-avatar">
+          <div className="hero-float hf-tag">
+            <div className="hf-tag-text">6+ Years</div>
+          </div>
+          <div className="hero-avatar-wrap">
             <Avatar />
           </div>
+        </div>
+
+        <div className="hero-scroll-hint">
+          <div className="scroll-mouse"><div className="scroll-wheel" /></div>
+          <span className="scroll-text">Scroll to explore</span>
         </div>
       </section>
 
@@ -84,7 +216,11 @@ export default function App() {
       <div className="sband" ref={stats.ref}>
         <div className="sband-grid">
           {STATS.map((s, i) => (
-            <div key={i} className={`sband-cell ${v(stats) ? "vis" : ""}`} style={{ transitionDelay: `${i * 0.1}s` }}>
+            <div
+              key={i}
+              className={`sband-cell ${v(stats) ? "vis" : ""}`}
+              style={{ transitionDelay: `${i * 0.1}s` }}
+            >
               <div className="sv">{s.value}</div>
               <div className="sl">{s.label}</div>
             </div>
@@ -127,7 +263,11 @@ export default function App() {
           <h2 className={`sec-title ${v(services) ? "vis" : ""}`}>Services That<br /><em>Move the Needle</em></h2>
           <div className="services-list">
             {SERVICES.map((s, i) => (
-              <div key={i} className={`service-row ${v(services) ? "vis" : ""}`} style={{ transitionDelay: `${i * 0.08}s` }}>
+              <div
+                key={i}
+                className={`service-row ${v(services) ? "vis" : ""}`}
+                style={{ transitionDelay: `${i * 0.08}s` }}
+              >
                 <div className="svc-icon">{s.icon}</div>
                 <div>
                   <div className="svc-title">{s.title}</div>
@@ -189,6 +329,11 @@ export default function App() {
         </div>
       </section>
 
+      {/* ══ RECENT WORK SLIDER ══ */}
+      <div ref={rwork.ref}>
+        <RecentWorkSlider inView={v(rwork)} />
+      </div>
+
       {/* ══ PROCESS ══ */}
       <section className="sec alt" id="process" ref={process.ref}>
         <div className="sec-inner">
@@ -234,7 +379,8 @@ export default function App() {
       {/* ══ INDUSTRIES BAND ══ */}
       <div className="ind-band">
         <div className="ind-inner">
-          <div className="ind-label">Industries Served</div>
+          <div className="ind-label">Industries</div>
+          <div className="ind-divider" />
           <div className="ind-track">
             {INDUSTRIES.map(c => <span key={c} className="ind-item">{c}</span>)}
           </div>
@@ -248,7 +394,11 @@ export default function App() {
           <h2 className={`sec-title ${v(faq) ? "vis" : ""}`}>Things People<br /><em>Usually Ask</em></h2>
           <div className="faq-list">
             {FAQS.map((f, i) => (
-              <div key={i} className={`faq-item ${v(faq) ? "vis" : ""} ${openFaq === i ? "open" : ""}`} style={{ transitionDelay: `${i * 0.07}s` }}>
+              <div
+                key={i}
+                className={`faq-item ${v(faq) ? "vis" : ""} ${openFaq === i ? "open" : ""}`}
+                style={{ transitionDelay: `${i * 0.07}s` }}
+              >
                 <div className="faq-q" onClick={() => setOpenFaq(openFaq === i ? null : i)}>
                   <span className="faq-qt">{f.q}</span>
                   <span className="faq-ic">+</span>
@@ -273,7 +423,7 @@ export default function App() {
                 <div><div className="clink-label">Email</div><div className="clink-val">partha@parthadevnath.com</div></div>
               </a>
               <a href="https://linkedin.com/in/parthadevnath" target="_blank" rel="noreferrer" className="contact-link">
-                <div className="clink-icon" style={{ fontFamily: "serif", fontWeight: 700, fontSize: 13 }}>in</div>
+                <div className="clink-icon" style={{ fontFamily: "serif", fontWeight: 700, fontSize: 14 }}>in</div>
                 <div><div className="clink-label">LinkedIn</div><div className="clink-val">linkedin.com/in/parthadevnath</div></div>
               </a>
               <a href="tel:+12345678900" className="contact-link">
@@ -282,11 +432,23 @@ export default function App() {
               </a>
             </div>
             <div className={`contact-right ${v(contact) ? "vis" : ""}`}>
-              <div className="form-group"><label className="form-label">Your Name</label><input type="text" className="form-input" placeholder="John Doe" /></div>
-              <div className="form-group"><label className="form-label">Email Address</label><input type="email" className="form-input" placeholder="john@company.com" /></div>
-              <div className="form-group"><label className="form-label">Monthly Ad Spend</label><input type="text" className="form-input" placeholder="$10,000 / month" /></div>
-              <div className="form-group"><label className="form-label">Your Situation</label><textarea className="form-input" placeholder="Current challenges, goals, what you've tried…" /></div>
-              <button className="form-submit">Send Message →</button>
+              <div className="form-group">
+                <label className="form-label">Your Name</label>
+                <input type="text" className="form-input" placeholder="John Doe" />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Email Address</label>
+                <input type="email" className="form-input" placeholder="john@company.com" />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Monthly Ad Spend</label>
+                <input type="text" className="form-input" placeholder="$10,000 / month" />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Your Situation</label>
+                <textarea className="form-input" placeholder="Current challenges, goals, what you've tried…" />
+              </div>
+              <button className="form-submit"><span>Send Message →</span></button>
             </div>
           </div>
         </div>
@@ -294,17 +456,44 @@ export default function App() {
 
       {/* ══ FOOTER ══ */}
       <footer>
-        <div className="footer-logo">
-          <img src="/partha_logo.png" alt="Partha Logo" style={{ height: "28px", width: "auto", display: "block" }} />
+        <div className="footer-top">
+          <div className="footer-brand">
+            <div className="footer-logo">
+              <img src="/partha_logo.png" alt="Partha Devnath" />
+            </div>
+            <div className="footer-tagline">Performance Marketing · Google Ads Specialist · 6+ Years</div>
+          </div>
+
+          <div className="footer-nav-group">
+            <div className="footer-nav-label">Navigation</div>
+            {NAV_LINKS.map(n => (
+              <a key={n.href} href={n.href}>{n.label}</a>
+            ))}
+          </div>
+
+          <div className="footer-contact-group">
+            <div className="footer-nav-label">Contact</div>
+            <a href="mailto:partha@parthadevnath.com" className="footer-contact-item">partha@parthadevnath.com</a>
+            <a href="https://linkedin.com/in/parthadevnath" className="footer-contact-item" target="_blank" rel="noreferrer">linkedin.com/in/parthadevnath</a>
+            <a href="#contact" className="footer-contact-item">Book a Free Audit →</a>
+          </div>
         </div>
-        <div className="footer-copy">© 2024 Partha Devnath · All Rights Reserved</div>
-        <div className="footer-links">
-          {NAV_LINKS.map(n => <a key={n.href} href={n.href}>{n.label}</a>)}
+
+        <div className="footer-bottom">
+          <div className="footer-copy">© 2024 Partha Devnath · All Rights Reserved</div>
+          <div className="footer-socials">
+            <a href="https://linkedin.com/in/parthadevnath" target="_blank" rel="noreferrer" className="footer-social" aria-label="LinkedIn">
+              <span style={{ fontFamily: "serif", fontWeight: 700 }}>in</span>
+            </a>
+            <a href="mailto:partha@parthadevnath.com" className="footer-social" aria-label="Email">✉</a>
+            <a href="#contact" className="footer-social" aria-label="WhatsApp">💬</a>
+          </div>
         </div>
       </footer>
 
       {/* ══ STICKY CTA ══ */}
       <div className={`sticky-cta ${scrollY > 500 ? "show" : ""}`}>
+        <span className="sticky-dot" />
         <span className="sticky-txt">Scale with Google Ads?</span>
         <a href="#contact" className="sticky-btn">Book Free Call</a>
       </div>
