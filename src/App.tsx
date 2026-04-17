@@ -8,99 +8,33 @@ import {
 } from "./data/constants";
 import "./App.css";
 
-/* ── RECENT WORK DATA ── */
-const RECENT_WORKS = [
-  { file: "recent_work_1", title: "D2C Fashion Brand", tag: "Search + Shopping" },
-  { file: "recent_work_2", title: "SaaS Lead Gen", tag: "Performance Max" },
-  { file: "recent_work_3", title: "Health & Wellness", tag: "Search Campaigns" },
-  { file: "recent_work_4", title: "Local Services", tag: "Local + Call Ads" },
-  { file: "recent_work_5", title: "E-commerce Scale", tag: "Shopping + RLSA" },
-  { file: "recent_work_6", title: "B2B SaaS", tag: "Demand Gen" },
-];
-
-/* ── RECENT WORK SLIDE ── */
-function WorkSlide({ work }: { work: typeof RECENT_WORKS[0] }) {
-  const [hasImg, setHasImg] = useState(true);
-  return (
-    <div className="rwork-slide">
-      {hasImg ? (
-        <img
-          className="rwork-slide-img"
-          src={`/${work.file}.png`}
-          alt={work.title}
-          onError={() => setHasImg(false)}
-        />
-      ) : (
-        <div className="rwork-slide-placeholder">
-          <div className="rwork-slide-placeholder-icon">◈</div>
-          <div className="rwork-slide-placeholder-text">{work.title}</div>
-        </div>
-      )}
-      <div className="rwork-slide-overlay">
-        <div className="rwork-slide-title">{work.title}</div>
-        <div className="rwork-slide-tag">{work.tag}</div>
-      </div>
-    </div>
-  );
-}
-
-/* ── RECENT WORK SLIDER ── */
-function RecentWorkSlider({ inView }: { inView: boolean }) {
-  const [current, setCurrent] = useState(0);
-  const slidesVisible = 3;
-  const maxIndex = Math.max(0, RECENT_WORKS.length - slidesVisible);
-
-  const prev = () => setCurrent(c => Math.max(0, c - 1));
-  const next = () => setCurrent(c => Math.min(maxIndex, c + 1));
-
-  const trackStyle = {
-    transform: `translateX(calc(-${current * (380 + 20)}px))`,
-  };
-
-  return (
-    <section className="rwork">
-      <div className="rwork-inner">
-        <div className="rwork-head">
-          <div className={`sec-label ${inView ? "vis" : ""}`}>Portfolio</div>
-          <h2 className={`sec-title ${inView ? "vis" : ""}`}>
-            Recent <em>Work</em>
-          </h2>
-        </div>
-        <div className="rwork-track-wrap">
-          <div className="rwork-track" style={trackStyle}>
-            {RECENT_WORKS.map((w, i) => (
-              <WorkSlide key={i} work={w} />
-            ))}
-          </div>
-        </div>
-        <div className="rwork-controls">
-          <button className="rwork-btn" onClick={prev} disabled={current === 0} aria-label="Previous">
-            ←
-          </button>
-          <div className="rwork-dots">
-            {Array.from({ length: maxIndex + 1 }).map((_, i) => (
-              <div
-                key={i}
-                className={`rwork-dot ${current === i ? "active" : ""}`}
-                onClick={() => setCurrent(i)}
-              />
-            ))}
-          </div>
-          <button className="rwork-btn" onClick={next} disabled={current === maxIndex} aria-label="Next">
-            →
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 /* ── MAIN APP ── */
 export default function App() {
   const [scrollY, setScrollY] = useState(0);
   const [activeProj, setActiveProj] = useState<number | null>(null);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [navOpen, setNavOpen] = useState(false);
+  
+  // Form State
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    spend: "",
+    situation: ""
+  });
+  
+  // Theme State
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme') || 'dark';
+    }
+    return 'dark';
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   useEffect(() => {
     const onScroll = () => setScrollY(window.scrollY);
@@ -119,7 +53,6 @@ export default function App() {
   const about    = useInView(0.1);
   const services = useInView(0.08);
   const work     = useInView(0.05);
-  const rwork    = useInView(0.05);
   const process  = useInView(0.08);
   const testi    = useInView(0.1);
   const faq      = useInView(0.08);
@@ -128,6 +61,23 @@ export default function App() {
   const v = (s: { inView: boolean }) => s.inView;
 
   const closeNav = () => setNavOpen(false);
+  const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
+
+  // WhatsApp Submit Handler
+  const handleWhatsAppSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const message = `*New Lead from Portfolio*
+    
+*Name:* ${formData.name}
+*Email:* ${formData.email}
+*Monthly Ad Spend:* ${formData.spend}
+*Situation:* ${formData.situation}`;
+
+    // Target Number: 8801308420830
+    const whatsappUrl = `https://wa.me/8801308420830?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  };
 
   return (
     <>
@@ -144,21 +94,31 @@ export default function App() {
         <a href="#" className="nav-logo">
           <img src="/partha_logo.png" alt="Partha Devnath" />
         </a>
+
         <ul className="nav-links">
           {NAV_LINKS.map(n => (
             <li key={n.href}><a href={n.href}>{n.label}</a></li>
           ))}
         </ul>
-        <a href="#contact" className="nav-cta">
-          <span>Book a Call</span>
-        </a>
-        <button
-          className={`nav-burger ${navOpen ? "open" : ""}`}
-          onClick={() => setNavOpen(!navOpen)}
-          aria-label="Menu"
-        >
-          <span /><span /><span />
-        </button>
+
+        <div className="nav-actions">
+          <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle Theme">
+            <span className="theme-icon">{theme === 'dark' ? '☀️' : '🌙'}</span>
+            <span className="theme-text">{theme === 'dark' ? 'Light' : 'Dark'}</span>
+          </button>
+          
+          <a href="#contact" className="nav-cta">
+            <span>Book a Call</span>
+          </a>
+          
+          <button
+            className={`nav-burger ${navOpen ? "open" : ""}`}
+            onClick={() => setNavOpen(!navOpen)}
+            aria-label="Menu"
+          >
+            <span /><span /><span />
+          </button>
+        </div>
       </nav>
 
       {/* ══ HERO ══ */}
@@ -172,11 +132,12 @@ export default function App() {
             <span className="eyebrow-text">Google Ads Specialist</span>
             <span className="eyebrow-line" />
           </div>
+          
           <h1 className="hero-h1">
             <span className="line"><span>Turning Ad Spend</span></span>
-            <span className="line"><span>Into <em>Real</em></span></span>
-            <span className="line"><span>Revenue.</span></span>
+            <span className="line"><span>Into <em>Real</em> Revenue.</span></span>
           </h1>
+          
           <p className="hero-sub">
             I'm <strong>Partha Devnath</strong> — a performance marketing specialist with <strong>6+ years</strong> managing Google Ads for D2C brands, SaaS companies, and local businesses globally.
           </p>
@@ -303,6 +264,11 @@ export default function App() {
                   <span>◈ {p.budget}</span>
                   <span style={{ opacity: 0.6 }}>· {p.industry}</span>
                 </div>
+                
+                <div style={{ marginBottom: '20px', borderRadius: '4px', overflow: 'hidden' }}>
+                   <img src={`/recent_work_${(i % 9) + 1}.png`} alt={`${p.brand} campaign results`} style={{ width: '100%', display: 'block', border: '1px solid var(--line)' }} />
+                </div>
+
                 <div className="proj-metrics">
                   {p.results.map((r, j) => (
                     <div key={j} className="proj-met">
@@ -328,11 +294,6 @@ export default function App() {
           </div>
         </div>
       </section>
-
-      {/* ══ RECENT WORK SLIDER ══ */}
-      <div ref={rwork.ref}>
-        <RecentWorkSlider inView={v(rwork)} />
-      </div>
 
       {/* ══ PROCESS ══ */}
       <section className="sec alt" id="process" ref={process.ref}>
@@ -426,30 +387,62 @@ export default function App() {
                 <div className="clink-icon" style={{ fontFamily: "serif", fontWeight: 700, fontSize: 14 }}>in</div>
                 <div><div className="clink-label">LinkedIn</div><div className="clink-val">linkedin.com/in/parthadevnath</div></div>
               </a>
-              <a href="tel:+12345678900" className="contact-link">
+              <a href="https://wa.me/8801308420830" target="_blank" rel="noreferrer" className="contact-link">
                 <div className="clink-icon">💬</div>
-                <div><div className="clink-label">WhatsApp</div><div className="clink-val">+1 234 567 8900</div></div>
+                <div><div className="clink-label">WhatsApp</div><div className="clink-val">+880 1308-420830</div></div>
               </a>
             </div>
-            <div className={`contact-right ${v(contact) ? "vis" : ""}`}>
-              <div className="form-group">
-                <label className="form-label">Your Name</label>
-                <input type="text" className="form-input" placeholder="John Doe" />
-              </div>
-              <div className="form-group">
-                <label className="form-label">Email Address</label>
-                <input type="email" className="form-input" placeholder="john@company.com" />
+            
+            <form className={`contact-right ${v(contact) ? "vis" : ""}`} onSubmit={handleWhatsAppSubmit}>
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Your Name</label>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    placeholder="John Doe" 
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Email Address</label>
+                  <input 
+                    type="email" 
+                    className="form-input" 
+                    placeholder="john@company.com" 
+                    required
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  />
+                </div>
               </div>
               <div className="form-group">
                 <label className="form-label">Monthly Ad Spend</label>
-                <input type="text" className="form-input" placeholder="$10,000 / month" />
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  placeholder="$10,000 / month" 
+                  required
+                  value={formData.spend}
+                  onChange={(e) => setFormData({ ...formData, spend: e.target.value })}
+                />
               </div>
               <div className="form-group">
                 <label className="form-label">Your Situation</label>
-                <textarea className="form-input" placeholder="Current challenges, goals, what you've tried…" />
+                <textarea 
+                  className="form-input" 
+                  placeholder="Current challenges, goals, what you've tried…" 
+                  required
+                  value={formData.situation}
+                  onChange={(e) => setFormData({ ...formData, situation: e.target.value })}
+                />
               </div>
-              <button className="form-submit"><span>Send Message →</span></button>
-            </div>
+              <button type="submit" className="form-submit">
+                <span>Send Message →</span>
+              </button>
+            </form>
           </div>
         </div>
       </section>
@@ -486,7 +479,7 @@ export default function App() {
               <span style={{ fontFamily: "serif", fontWeight: 700 }}>in</span>
             </a>
             <a href="mailto:partha@parthadevnath.com" className="footer-social" aria-label="Email">✉</a>
-            <a href="#contact" className="footer-social" aria-label="WhatsApp">💬</a>
+            <a href="https://wa.me/8801308420830" target="_blank" rel="noreferrer" className="footer-social" aria-label="WhatsApp">💬</a>
           </div>
         </div>
       </footer>
