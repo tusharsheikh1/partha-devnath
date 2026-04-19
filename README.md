@@ -1,73 +1,114 @@
-# React + TypeScript + Vite
+# 📈 Performance Marketing Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![React](https://img.shields.io/badge/React-18.0-blue.svg?style=for-the-badge&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178c6.svg?style=for-the-badge&logo=typescript)
+![Vite](https://img.shields.io/badge/Vite-5.0-646CFF.svg?style=for-the-badge&logo=vite)
+![CSS3](https://img.shields.io/badge/Custom_CSS-Variables-1572B6.svg?style=for-the-badge&logo=css3)
 
-Currently, two official plugins are available:
+> A premium, ultra-fast single-page portfolio designed for a Performance Marketing & Google Ads Specialist. Built to convert, this site features advanced scroll animations, dynamic theme toggling, and seamless WhatsApp lead generation without relying on heavy UI libraries.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## ✨ Key Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* **🌓 Dynamic Theming:** Custom CSS-variable driven architecture supporting an eye-friendly "Gold/Dark" mode and a striking "Sunset Orange/Light" mode.
+* **⚡ Ultra-Performance:** Built with Vite and React, leveraging native CSS keyframes and a custom Intersection Observer (`useInView`) for buttery-smooth scroll animations without the bloat of external animation libraries.
+* **📱 Direct WhatsApp Integration:** A highly optimized contact form that pre-formats client lead data (Name, Email, Ad Spend, Situation) and routes it directly to a WhatsApp business number.
+* **📊 Data-Driven Project Showcase:** Interactive case studies featuring custom SVG sparklines (`Sparkline.tsx`) and grid-based metric highlights.
+* **🧩 Centralized Content Management:** All copy, testimonials, services, and project metrics are completely decoupled from the UI and managed via a single `constants.ts` file for effortless updating.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠️ Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+* **Core:** [React 18](https://react.dev/)
+* **Build Tool:** [Vite](https://vitejs.dev/)
+* **Language:** [TypeScript](https://www.typescriptlang.org/) (Strict Mode)
+* **Styling:** Custom Vanilla CSS (`App.css`) leveraging native variables, flexbox/grid, and glassmorphism. Tailwind is initialized but core styles remain bespoke.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 📂 Project Architecture
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+```text
+src/
+├── components/
+│   ├── Avatar.tsx       # Optimized profile imagery
+│   └── Sparkline.tsx    # Dynamic SVG line-charts for case studies
+├── data/
+│   └── constants.ts     # 🗄️ Single Source of Truth for all textual content
+├── hooks/
+│   └── useInView.ts     # Custom intersection observer for scroll reveals
+├── App.tsx              # Main application layout and section orchestration
+├── App.css              # Bespoke animations, theming, and layout styles
+├── index.css            # Base resets and Tailwind imports
+└── main.tsx             # React DOM entry point
+🚀 Getting Started
+Prerequisites
+Ensure you have Node.js (v18+ recommended) installed.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. Installation
+Clone the repository and install dependencies:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+2. Local Development
+Start the ultra-fast Vite development server:
+
+Bash
+npm run dev
+Navigate to http://localhost:5173 in your browser. Hot Module Replacement (HMR) is enabled by default.
+
+3. Production Build
+Compile and optimize the application for production:
+
+Bash
+npm run build
+The compiled assets will be generated in the dist/ directory. You can preview the production build locally using:
+
+Bash
+npm run preview
+✏️ Customization Guide
+This template is designed to be easily maintainable. You do not need to edit the React components to update the site content.
+
+Updating Text, Stats, and Projects
+Navigate to src/data/constants.ts.
+
+Edit the relevant arrays (STATS, SERVICES, PROJECTS, PROCESS, TESTIMONIALS, FAQS).
+
+Save the file. The UI will dynamically map and render your new content.
+
+Updating Branding Assets
+Place your updated images in the /public directory:
+
+/public/partha_logo.png - Navbar and Footer Logo
+
+/public/partha_photo.png - Hero and About Avatar
+
+/public/recent_work_[1-9].png - Case study thumbnail images
+
+Updating Contact Information
+Open src/App.tsx.
+
+Locate the handleWhatsAppSubmit function.
+
+Update the Target Number inside the whatsappUrl variable to your desired WhatsApp number (include the country code, e.g., 880...).
+
+Update the mailto: links in the Contact and Footer sections.
+
+🌐 Deployment
+Because this project is a static site built with Vite, it can be deployed seamlessly to platforms like Vercel, Netlify, or Cloudflare Pages.
+
+For Vercel/Netlify:
+
+Connect your GitHub repository.
+
+Set the build command to npm run build.
+
+Set the publish directory to dist.
+
+Deploy!

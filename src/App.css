@@ -476,14 +476,85 @@ body::before {
 .about-left.vis { opacity: 1; transform: none; }
 .about-right { opacity: 0; transform: translateX(40px); transition: opacity 1s 0.25s cubic-bezier(0.16,1,0.3,1), transform 1s 0.25s cubic-bezier(0.16,1,0.3,1); }
 .about-right.vis { opacity: 1; transform: none; }
-.about-img-wrap { position: relative; }
-.about-img { aspect-ratio: 3/4; background: var(--surface); border-radius: 4px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 40px 80px var(--shadow-base); transition: transform 0.6s cubic-bezier(0.16,1,0.3,1); }
-.about-img:hover { transform: scale(1.02); }
+
+.about-img-wrap { 
+  position: relative; 
+  display: flex; 
+  justify-content: center; 
+  align-items: center;
+  padding: 20px;
+  animation: floatProfile 6s ease-in-out infinite; /* Added gentle floating animation */
+}
+
+@keyframes floatProfile {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/* Added expanding "Radar/Ripple" effect behind the image */
+.about-img-wrap::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gold2);
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  pointer-events: none;
+  animation: strategyRipple 3s linear infinite;
+}
+
+@keyframes strategyRipple {
+  0% { width: 320px; height: 320px; opacity: 0.8; }
+  100% { width: 440px; height: 440px; opacity: 0; border-width: 0px; }
+}
+
+.about-img { 
+  width: 320px; 
+  height: 320px; 
+  background: var(--surface); 
+  border-radius: 50%; 
+  overflow: hidden; 
+  border: 1px solid var(--line); 
+  box-shadow: 0 20px 40px var(--shadow-base); 
+  transition: transform 0.6s cubic-bezier(0.16,1,0.3,1), border-color 0.6s; 
+  z-index: 2;
+  position: relative; /* ensure it stays above the ripple */
+}
+
+.about-img:hover { transform: scale(1.05); border-color: var(--gold2); }
 .about-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.about-corner-tl { position: absolute; top: -16px; right: -16px; width: 60px; height: 60px; border-top: 1.5px solid var(--line); border-right: 1.5px solid var(--line); transition: all 0.5s; }
-.about-corner-br { position: absolute; bottom: -16px; left: -16px; width: 60px; height: 60px; border-bottom: 1.5px solid var(--gold); border-left: 1.5px solid var(--gold); transition: all 0.5s; }
-.about-img-wrap:hover .about-corner-tl { transform: translate(8px, -8px); border-color: var(--gold2); }
-.about-img-wrap:hover .about-corner-br { transform: translate(-8px, 8px); border-color: var(--gold2); }
+
+.about-corner-tl { 
+  position: absolute; 
+  top: 0; 
+  left: 20%; 
+  width: 80px; 
+  height: 80px; 
+  border-top: 1.5px solid var(--line); 
+  border-left: 1.5px solid var(--line); 
+  transition: all 0.5s; 
+  pointer-events: none;
+}
+
+.about-corner-br { 
+  position: absolute; 
+  bottom: 0; 
+  right: 20%; 
+  width: 80px; 
+  height: 80px; 
+  border-bottom: 1.5px solid var(--gold); 
+  border-right: 1.5px solid var(--gold); 
+  transition: all 0.5s; 
+  pointer-events: none;
+}
+
+.about-img-wrap:hover .about-corner-tl { transform: translate(-10px, -10px); border-color: var(--gold2); }
+.about-img-wrap:hover .about-corner-br { transform: translate(10px, 10px); border-color: var(--gold2); }
+
 .about-badge { display: inline-flex; align-items: center; gap: 10px; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); border: 1px solid var(--line); padding: 8px 18px; border-radius: 100px; margin-bottom: 28px; background: var(--glow); font-weight: 500; }
 .about-badge::before { content:'●'; font-size: 7px; animation: pulse 2s ease-in-out infinite; color: var(--gold2); }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.2} }
