@@ -74,8 +74,8 @@ export default function App() {
 *Monthly Ad Spend:* ${formData.spend}
 *Situation:* ${formData.situation}`;
 
-    // Target Number: 8801308420830
-    const whatsappUrl = `https://wa.me/8801308420830?text=${encodeURIComponent(message)}`;
+    // Target Number: 8801770206859
+    const whatsappUrl = `https://wa.me/8801770206859?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
@@ -92,7 +92,7 @@ export default function App() {
       {/* ══ NAVBAR ══ */}
       <nav className={`nav ${scrollY > 40 ? "scrolled" : ""}`}>
         <a href="#" className="nav-logo">
-          <img src="/partha_logo.png" alt="Partha Devnath" />
+          <img src="/partha_logo.png" alt="Partha Debnath" />
         </a>
 
         <ul className="nav-links">
@@ -139,7 +139,7 @@ export default function App() {
           </h1>
           
           <p className="hero-sub">
-            I'm <strong>Partha Devnath</strong> — a performance marketing specialist with <strong>6+ years</strong> managing Google Ads for D2C brands, SaaS companies, and local businesses globally.
+            I'm <strong>Partha Debnath</strong> — a performance marketing specialist with <strong>6+ years</strong> managing Google Ads for D2C brands, SaaS companies, and local businesses globally.
           </p>
           <div className="hero-actions">
             <a href="#contact" className="btn-primary">
@@ -379,17 +379,17 @@ export default function App() {
           <div className="contact-grid">
             <div className={`contact-left ${v(contact) ? "vis" : ""}`}>
               <p className="contact-lead">Whether you want a full audit, ongoing management, or a second opinion — let's have an honest conversation about what's possible for your business.</p>
-              <a href="mailto:partha@parthadevnath.com" className="contact-link">
+              <a href="mailto:uvpartha143@gmail.com" className="contact-link">
                 <div className="clink-icon">✉</div>
-                <div><div className="clink-label">Email</div><div className="clink-val">partha@parthadevnath.com</div></div>
+                <div><div className="clink-label">Email</div><div className="clink-val">uvpartha143@gmail.com</div></div>
               </a>
-              <a href="https://linkedin.com/in/parthadevnath" target="_blank" rel="noreferrer" className="contact-link">
+              <a href="https://www.linkedin.com/in/partha-debnath-531a8722a?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noreferrer" className="contact-link">
                 <div className="clink-icon" style={{ fontFamily: "serif", fontWeight: 700, fontSize: 14 }}>in</div>
-                <div><div className="clink-label">LinkedIn</div><div className="clink-val">linkedin.com/in/parthadevnath</div></div>
+                <div><div className="clink-label">LinkedIn</div><div className="clink-val">linkedin.com/in/partha-debnath</div></div>
               </a>
-              <a href="https://wa.me/8801308420830" target="_blank" rel="noreferrer" className="contact-link">
+              <a href="https://wa.me/8801770206859" target="_blank" rel="noreferrer" className="contact-link">
                 <div className="clink-icon">💬</div>
-                <div><div className="clink-label">WhatsApp</div><div className="clink-val">+880 1308-420830</div></div>
+                <div><div className="clink-label">WhatsApp</div><div className="clink-val">+880 1770-206859</div></div>
               </a>
             </div>
             
@@ -452,7 +452,7 @@ export default function App() {
         <div className="footer-top">
           <div className="footer-brand">
             <div className="footer-logo">
-              <img src="/partha_logo.png" alt="Partha Devnath" />
+              <img src="/partha_logo.png" alt="Partha Debnath" />
             </div>
             <div className="footer-tagline">Performance Marketing · Google Ads Specialist · 6+ Years</div>
           </div>
@@ -466,20 +466,26 @@ export default function App() {
 
           <div className="footer-contact-group">
             <div className="footer-nav-label">Contact</div>
-            <a href="mailto:partha@parthadevnath.com" className="footer-contact-item">partha@parthadevnath.com</a>
-            <a href="https://linkedin.com/in/parthadevnath" className="footer-contact-item" target="_blank" rel="noreferrer">linkedin.com/in/parthadevnath</a>
+            <a href="mailto:uvpartha143@gmail.com" className="footer-contact-item">uvpartha143@gmail.com</a>
+            <a href="https://www.linkedin.com/in/partha-debnath-531a8722a?utm_source=share_via&utm_content=profile&utm_medium=member_android" className="footer-contact-item" target="_blank" rel="noreferrer">linkedin.com/in/partha-debnath</a>
             <a href="#contact" className="footer-contact-item">Book a Free Audit →</a>
           </div>
         </div>
 
         <div className="footer-bottom">
-          <div className="footer-copy">© 2024 Partha Devnath · All Rights Reserved</div>
+          <div className="footer-copy">© 2024 Partha Debnath · All Rights Reserved</div>
           <div className="footer-socials">
-            <a href="https://linkedin.com/in/parthadevnath" target="_blank" rel="noreferrer" className="footer-social" aria-label="LinkedIn">
+            <a href="https://www.linkedin.com/in/partha-debnath-531a8722a?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noreferrer" className="footer-social" aria-label="LinkedIn">
               <span style={{ fontFamily: "serif", fontWeight: 700 }}>in</span>
             </a>
-            <a href="mailto:partha@parthadevnath.com" className="footer-social" aria-label="Email">✉</a>
-            <a href="https://wa.me/8801308420830" target="_blank" rel="noreferrer" className="footer-social" aria-label="WhatsApp">💬</a>
+            <a href="https://www.facebook.com/share/1XjyWBCYY1/" target="_blank" rel="noreferrer" className="footer-social" aria-label="Facebook">
+              <span style={{ fontFamily: "serif", fontWeight: 700 }}>f</span>
+            </a>
+            <a href="https://www.instagram.com/invites/contact/?utm_source=ig_contact_invite&utm_medium=copy_link&utm_content=to2579n" target="_blank" rel="noreferrer" className="footer-social" aria-label="Instagram">
+              <span style={{ fontFamily: "serif", fontWeight: 700 }}>ig</span>
+            </a>
+            <a href="mailto:uvpartha143@gmail.com" className="footer-social" aria-label="Email">✉</a>
+            <a href="https://wa.me/8801770206859" target="_blank" rel="noreferrer" className="footer-social" aria-label="WhatsApp">💬</a>
           </div>
         </div>
       </footer>
