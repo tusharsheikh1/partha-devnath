@@ -8,6 +8,13 @@ import {
 } from "./data/constants";
 import "./App.css";
 
+// Declare gtag on the window object to prevent TypeScript errors
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
+
 /* ── MAIN APP ── */
 export default function App() {
   const [scrollY, setScrollY] = useState(0);
@@ -63,10 +70,19 @@ export default function App() {
   const closeNav = () => setNavOpen(false);
   const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
 
-  // WhatsApp Submit Handler
+  // WhatsApp Submit Handler (With Conversion Tracking)
   const handleWhatsAppSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Trigger Google Ads Conversion unconditionally
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'conversion', {
+        'send_to': 'AW-10970896637/YOUR_CONVERSION_LABEL', // Remember to replace YOUR_CONVERSION_LABEL
+        'value': 1.0,
+        'currency': 'USD'
+      });
+    }
+
     const message = `*New Lead from Portfolio*
     
 *Name:* ${formData.name}
@@ -79,6 +95,17 @@ export default function App() {
     window.open(whatsappUrl, '_blank');
   };
 
+  // Helper for tracking clicks on the CTA buttons
+  const trackAuditClick = () => {
+    // Trigger Google Ads Click Event unconditionally
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'click', {
+        'event_category': 'Engagement',
+        'event_label': 'Book Audit Button'
+      });
+    }
+  };
+
   return (
     <>
       {/* ══ MOBILE MENU ══ */}
@@ -86,7 +113,7 @@ export default function App() {
         {NAV_LINKS.map(n => (
           <a key={n.href} href={n.href} onClick={closeNav}>{n.label}</a>
         ))}
-        <a href="#contact" className="nav-cta-mobile" onClick={closeNav}>Book a Call →</a>
+        <a href="#contact" className="nav-cta-mobile" onClick={() => { closeNav(); trackAuditClick(); }}>Book a Call →</a>
       </div>
 
       {/* ══ NAVBAR ══ */}
@@ -107,7 +134,7 @@ export default function App() {
             <span className="theme-text">{theme === 'dark' ? 'Light' : 'Dark'}</span>
           </button>
           
-          <a href="#contact" className="nav-cta">
+          <a href="#contact" className="nav-cta" onClick={trackAuditClick}>
             <span>Book a Call</span>
           </a>
           
@@ -142,7 +169,7 @@ export default function App() {
             I'm <strong>Partha Debnath</strong> — a performance marketing specialist with <strong>6+ years</strong> managing Google Ads for D2C brands, SaaS companies, and local businesses globally.
           </p>
           <div className="hero-actions">
-            <a href="#contact" className="btn-primary">
+            <a href="#contact" className="btn-primary" onClick={trackAuditClick}>
               <span>Book a Free Audit →</span>
             </a>
             <a href="#work" className="btn-ghost">View Case Studies</a>
@@ -468,7 +495,7 @@ export default function App() {
             <div className="footer-nav-label">Contact</div>
             <a href="mailto:uvpartha143@gmail.com" className="footer-contact-item">uvpartha143@gmail.com</a>
             <a href="https://www.linkedin.com/in/partha-debnath-531a8722a?utm_source=share_via&utm_content=profile&utm_medium=member_android" className="footer-contact-item" target="_blank" rel="noreferrer">linkedin.com/in/partha-debnath</a>
-            <a href="#contact" className="footer-contact-item">Book a Free Audit →</a>
+            <a href="#contact" className="footer-contact-item" onClick={trackAuditClick}>Book a Free Audit →</a>
           </div>
         </div>
 
@@ -494,7 +521,7 @@ export default function App() {
       <div className={`sticky-cta ${scrollY > 500 ? "show" : ""}`}>
         <span className="sticky-dot" />
         <span className="sticky-txt">Scale with Google Ads?</span>
-        <a href="#contact" className="sticky-btn">Book Free Call</a>
+        <a href="#contact" className="sticky-btn" onClick={trackAuditClick}>Book Free Call</a>
       </div>
     </>
   );
