@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useInView } from "./hooks/useInView";
 import { Sparkline } from "./components/Sparkline";
 import { Avatar } from "./components/Avatar";
@@ -7,13 +7,6 @@ import {
   TESTIMONIALS, FAQS, INDUSTRIES, NAV_LINKS
 } from "./data/constants";
 import "./App.css";
-
-// Declare gtag on the window object to prevent TypeScript errors
-declare global {
-  interface Window {
-    gtag?: (...args: any[]) => void;
-  }
-}
 
 /* ── MAIN APP ── */
 export default function App() {
@@ -37,10 +30,6 @@ export default function App() {
     }
     return 'dark';
   });
-
-  // Tracking Flags to prevent duplicate events
-  const hasInitiatedBooking = useRef(false);
-  const hasBookedAppointment = useRef(false);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -74,29 +63,10 @@ export default function App() {
   const closeNav = () => setNavOpen(false);
   const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
 
-  // Helper for tracking "Initiate Booking" (Clicks on CTA buttons)
-  const trackAuditClick = () => {
-    if (!hasInitiatedBooking.current && typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'conversion', {
-        'send_to': 'AW-10970896637/YOUR_INITIATE_BOOKING_LABEL', // <-- Replace this label
-      });
-      hasInitiatedBooking.current = true; // Prevents this from firing again
-    }
-  };
-
-  // WhatsApp Submit Handler (Tracks "Booked Appointment")
+  // WhatsApp Submit Handler
   const handleWhatsAppSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!hasBookedAppointment.current && typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'conversion', {
-        'send_to': 'AW-10970896637/YOUR_BOOKED_APPOINTMENT_LABEL', // <-- Replace this label
-        'value': 1.0,
-        'currency': 'USD'
-      });
-      hasBookedAppointment.current = true; // Prevents this from firing again if they spam click
-    }
-
     const message = `*New Lead from Portfolio*
     
 *Name:* ${formData.name}
@@ -116,7 +86,7 @@ export default function App() {
         {NAV_LINKS.map(n => (
           <a key={n.href} href={n.href} onClick={closeNav}>{n.label}</a>
         ))}
-        <a href="#contact" className="nav-cta-mobile" onClick={() => { closeNav(); trackAuditClick(); }}>Book a Call →</a>
+        <a href="#contact" className="nav-cta-mobile" onClick={closeNav}>Book a Call →</a>
       </div>
 
       {/* ══ NAVBAR ══ */}
@@ -137,7 +107,7 @@ export default function App() {
             <span className="theme-text">{theme === 'dark' ? 'Light' : 'Dark'}</span>
           </button>
           
-          <a href="#contact" className="nav-cta" onClick={trackAuditClick}>
+          <a href="#contact" className="nav-cta">
             <span>Book a Call</span>
           </a>
           
@@ -172,7 +142,7 @@ export default function App() {
             I'm <strong>Partha Debnath</strong> — a performance marketing specialist with <strong>6+ years</strong> managing Google Ads for D2C brands, SaaS companies, and local businesses globally.
           </p>
           <div className="hero-actions">
-            <a href="#contact" className="btn-primary" onClick={trackAuditClick}>
+            <a href="#contact" className="btn-primary">
               <span>Book a Free Audit →</span>
             </a>
             <a href="#work" className="btn-ghost">View Case Studies</a>
@@ -498,7 +468,7 @@ export default function App() {
             <div className="footer-nav-label">Contact</div>
             <a href="mailto:uvpartha143@gmail.com" className="footer-contact-item">uvpartha143@gmail.com</a>
             <a href="https://www.linkedin.com/in/partha-debnath-531a8722a?utm_source=share_via&utm_content=profile&utm_medium=member_android" className="footer-contact-item" target="_blank" rel="noreferrer">linkedin.com/in/partha-debnath</a>
-            <a href="#contact" className="footer-contact-item" onClick={trackAuditClick}>Book a Free Audit →</a>
+            <a href="#contact" className="footer-contact-item">Book a Free Audit →</a>
           </div>
         </div>
 
@@ -524,7 +494,7 @@ export default function App() {
       <div className={`sticky-cta ${scrollY > 500 ? "show" : ""}`}>
         <span className="sticky-dot" />
         <span className="sticky-txt">Scale with Google Ads?</span>
-        <a href="#contact" className="sticky-btn" onClick={trackAuditClick}>Book Free Call</a>
+        <a href="#contact" className="sticky-btn">Book Free Call</a>
       </div>
     </>
   );
