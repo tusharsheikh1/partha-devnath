@@ -483,7 +483,7 @@ body::before {
   justify-content: center; 
   align-items: center;
   padding: 20px;
-  animation: floatProfile 6s ease-in-out infinite; /* Added gentle floating animation */
+  animation: floatProfile 6s ease-in-out infinite;
 }
 
 @keyframes floatProfile {
@@ -491,7 +491,7 @@ body::before {
   50% { transform: translateY(-12px); }
 }
 
-/* Added expanding "Radar/Ripple" effect behind the image */
+/* Expanding "Radar/Ripple" effect behind the image (Desktop Sizes) */
 .about-img-wrap::after {
   content: '';
   position: absolute;
@@ -512,6 +512,12 @@ body::before {
   100% { width: 440px; height: 440px; opacity: 0; border-width: 0px; }
 }
 
+/* Expanding "Radar/Ripple" effect (Mobile Sizes) */
+@keyframes strategyRippleMobile {
+  0% { width: 250px; height: 250px; opacity: 0.8; }
+  100% { width: 350px; height: 350px; opacity: 0; border-width: 0px; }
+}
+
 .about-img { 
   width: 320px; 
   height: 320px; 
@@ -522,7 +528,7 @@ body::before {
   box-shadow: 0 20px 40px var(--shadow-base); 
   transition: transform 0.6s cubic-bezier(0.16,1,0.3,1), border-color 0.6s; 
   z-index: 2;
-  position: relative; /* ensure it stays above the ripple */
+  position: relative;
 }
 
 .about-img:hover { transform: scale(1.05); border-color: var(--gold2); }
@@ -754,6 +760,14 @@ footer { background: var(--surface); border-top: 1px solid var(--line); padding:
   .sband-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .sec { padding: 80px 28px; }
   .about-grid, .contact-grid { grid-template-columns: minmax(0, 1fr); gap: 52px; }
+  
+  /* Make the circular profile image mobile friendly */
+  .about-img-wrap { padding: 40px 0; } /* Give extra space for the mobile ripple animation */
+  .about-img { width: 250px; height: 250px; }
+  .about-img-wrap::after { animation: strategyRippleMobile 3s linear infinite; }
+  .about-corner-tl { left: 15%; width: 60px; height: 60px; }
+  .about-corner-br { right: 15%; width: 60px; height: 60px; }
+  
   .form-row { grid-template-columns: minmax(0, 1fr); gap: 24px; }
   .work-grid { grid-template-columns: minmax(0, 1fr); }
   .testi-grid { grid-template-columns: minmax(0, 1fr); }
