@@ -22,17 +22,13 @@ export default function App() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [navOpen, setNavOpen] = useState(false);
   
-  // Tracking State (Ready to be connected to a site-wide admin toggle)
-  const [isTrackingEnabled, setIsTrackingEnabled] = useState(() => {
+  // Tracking State: Reads from localStorage (can be controlled via admin panel settings)
+  const [isTrackingEnabled] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('trackingEnabled') !== 'false';
     }
     return true;
   });
-
-  useEffect(() => {
-    localStorage.setItem('trackingEnabled', isTrackingEnabled.toString());
-  }, [isTrackingEnabled]);
 
   // Form State
   const [formData, setFormData] = useState({
